@@ -20,14 +20,12 @@ class GetTodos(
                     when(todoOrder) {
                         is TodoOrder.Title -> todos.sortedBy { it.title.lowercase() }
                         is TodoOrder.Date -> todos.sortedBy { it.timestamp }
-                        is TodoOrder.Color -> todos.sortedBy { it.color }
                     }
                 }
                 is OrderType.Descending -> {
                     when(todoOrder) {
                         is TodoOrder.Title -> todos.sortedByDescending { it.title.lowercase() }
                         is TodoOrder.Date -> todos.sortedByDescending { it.timestamp }
-                        is TodoOrder.Color -> todos.sortedByDescending { it.color }
                     }
                 }
             }

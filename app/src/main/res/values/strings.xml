@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">TodoApp</string>
     <string name="category_list_item">School</string>
+
+    <string name="pageName_todoList">나의 TODO 리스트</string>
+    <string name="pageName_addTodo">TODO 추가</string>
+    <string name="addTodo_textField_title">TODO 제목</string>
+    <string name="addTodo_textField_content">추가 내용</string>
+
+<!--  SampleData  -->
     <string name="items1">청소 하기</string>
     <string name="items2">설거지 하기</string>
     <string name="items3">과제 다음주 화요일까지 끝내기</string>

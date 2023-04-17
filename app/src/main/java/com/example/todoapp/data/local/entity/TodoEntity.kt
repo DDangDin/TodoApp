@@ -6,9 +6,9 @@ import androidx.room.PrimaryKey
 @Entity
 data class TodoEntity(
     val title: String,
-    val content: String,
-    val timestamp: Long,
-    val color: Int,
+    val content: String? = null,
+    val timestamp: Long? = null,
+    val isDone: Boolean,
     @PrimaryKey val id: Int? = null
 ) {
 //    companion object {
