@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">TodoApp</string>
+    <string name="category_list_item">School</string>
+    <string name="items1">청소 하기</string>
+    <string name="items2">설거지 하기</string>
+    <string name="items3">과제 다음주 화요일까지 끝내기</string>
+    <string name="items4">토익 스피킹 신청하기</string>
+    <string name="items5">자기설계 보고서 준비하기</string>
+</resources>
