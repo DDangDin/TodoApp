@@ -10,13 +10,12 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.todoapp.R
 import com.example.todoapp.util.UiEvent
@@ -31,6 +30,8 @@ fun TodoListScreen(
 
     val todos = viewModel.todos.collectAsState(initial = emptyList())
     val scaffoldState = rememberScaffoldState()
+    val isLoading = rememberSaveable { mutableStateOf(true) }
+
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
@@ -44,10 +45,27 @@ fun TodoListScreen(
                     }
                 }
                 is UiEvent.Navigate -> onNavigate(event)
+                is UiEvent.ListLoading -> isLoading.value = event.isLoading
                 else -> Unit
             }
         }
     }
+
+//    if (state.error.isNotBlank()) {
+//        Text(
+//            text = state.error,
+//            color = MaterialTheme.colors.error,
+//            textAlign = TextAlign.Center,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(horizontal = 20.dp)
+//                .align(Alignment.Center)
+//        )
+//    }
+//    if(state.isLoading) {
+//        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+//    }
+
     Scaffold(
         scaffoldState = scaffoldState,
         modifier = Modifier.fillMaxSize(),
@@ -60,11 +78,14 @@ fun TodoListScreen(
                     contentDescription = "추가"
                 )
             }
+
         },
-        floatingActionButtonPosition = FabPosition.Center
+        floatingActionButtonPosition = FabPosition.Center,
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(13.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(13.dp)
         ) {
             TextTopBar(
                 modifier = Modifier
@@ -72,23 +93,30 @@ fun TodoListScreen(
                     .padding(start = 5.dp, end = 25.dp, top = 25.dp, bottom = 25.dp),
                 text = R.string.pageName_todoList
             )
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-                contentPadding = PaddingValues(vertical = 10.dp)
-            ) {
-                items(todos.value) { todo ->
-                    TodoItem(
-                        todo = todo,
-                        onEvent = viewModel::onEvent,    // !!
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                            viewModel.onEvent(TodoListEvent.OnTodoClick(todo))
-                        },
-                    )
-                }
+            if (!isLoading.value) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
+                    contentPadding = PaddingValues(vertical = 10.dp)
+                ) {
+                    items(todos.value) { todo ->
+                        TodoItem(
+                            todo = todo,
+                            onEvent = viewModel::onEvent,    // !!
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    viewModel.onEvent(TodoListEvent.OnTodoClick(todo))
+                                },
+                        )
 
+                    }
+
+                }
+            } else {
+                Box(modifier = Modifier.fillMaxSize()){
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
             }
         }
     }

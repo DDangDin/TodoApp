@@ -6,9 +6,6 @@ import com.example.todoapp.data.local.TodoDao
 import com.example.todoapp.data.local.TodoDatabase
 import com.example.todoapp.data.repository.TodoRepositoryImpl
 import com.example.todoapp.domain.repository.TodoRepository
-import com.example.todoapp.domain.use_case.DeleteTodo
-import com.example.todoapp.domain.use_case.GetTodos
-import com.example.todoapp.domain.use_case.TodoUseCases
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,13 +40,4 @@ object AppModule {
 //    fun provideTodoRepository(db: TodoDatabase): TodoRepository {
 //        return FakeTodoRepositoryImpl(db.todoDao)
 //    }
-
-    @Provides
-    @Singleton
-    fun provideTodoUseCases(repository: TodoRepository): TodoUseCases {
-        return TodoUseCases(
-            getTodos = GetTodos(repository),
-            deleteTodo = DeleteTodo(repository)
-        )
-    }
 }
