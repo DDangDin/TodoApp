@@ -1,9 +1,8 @@
 package com.example.todoapp.view.todo_list
 
+
 import androidx.compose.animation.*
-import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -27,17 +26,17 @@ import com.example.todoapp.util.UiEvent
 import com.example.todoapp.view.common.TextTopBar
 import com.example.todoapp.view.viewmodel.TodoViewModel
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TodoListScreen(
+fun CompleteTodoList(
     onNavigate: (UiEvent.Navigate) -> Unit,
-    onCompleteTodoListClick: () -> Unit,
+    onPopBackStack: () -> Unit,
     viewModel: TodoViewModel = hiltViewModel()
 ) {
 
-    val incompleteTodos = viewModel.incompleteTodos.collectAsState(initial = emptyList())
+    val completeTodos = viewModel.completeTodos.collectAsState(initial = emptyList())
     val scaffoldState = rememberScaffoldState()
-    val isLoading = remember { mutableStateOf(false) }
+    val isLoading = rememberSaveable { mutableStateOf(true) }
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
@@ -45,54 +44,23 @@ fun TodoListScreen(
                 is UiEvent.ShowSnackbar -> {
                     val result = scaffoldState.snackbarHostState.showSnackbar(
                         message = event.message,
-                        actionLabel = event.action,
-                        duration = SnackbarDuration.Short
+                        actionLabel = event.action
                     )
-                    if (result == SnackbarResult.ActionPerformed) {
-                        if (event.action == "취소") {
-                            viewModel.onEvent(TodoListEvent.OnUndoDeleteClick)
-                        } else {
-                            viewModel.onEvent(TodoListEvent.OnCompleteTodoListClick)
-                        }
+                    if (event.action == "취소" && result == SnackbarResult.ActionPerformed) {
+                        viewModel.onEvent(TodoListEvent.OnUndoDeleteClick)
                     }
                 }
                 is UiEvent.Navigate -> onNavigate(event)
                 is UiEvent.ListLoading -> isLoading.value = event.isLoading
+                is UiEvent.PopBackStack -> onPopBackStack()
                 else -> Unit
             }
         }
     }
 
-//    if (state.error.isNotBlank()) {
-//        Text(
-//            text = state.error,
-//            color = MaterialTheme.colors.error,
-//            textAlign = TextAlign.Center,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(horizontal = 20.dp)
-//                .align(Alignment.Center)
-//        )
-//    }
-//    if(state.isLoading) {
-//        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-//    }
-
     Scaffold(
         scaffoldState = scaffoldState,
         modifier = Modifier.fillMaxSize(),
-        floatingActionButton = {
-            FloatingActionButton(onClick = {
-                viewModel.onEvent(TodoListEvent.OnAddTodoClick)
-            }) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "추가"
-                )
-            }
-
-        },
-        floatingActionButtonPosition = FabPosition.Center,
     ) {
         Column(
             modifier = Modifier
@@ -106,24 +74,23 @@ fun TodoListScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                TextTopBar(text = R.string.pageName_todoList)
-                IconButton(onClick = { onCompleteTodoListClick() }) {
+                TextTopBar(text = R.string.pageName_completeTodo)
+                IconButton(onClick = { onPopBackStack() }) {
                     Icon(
                         modifier = Modifier.size(30.dp),
-                        imageVector = ImageVector.vectorResource(id = R.drawable.baseline_playlist_add_check_24),
-                        contentDescription = stringResource(id = R.string.pageName_completeTodo),
+                        imageVector = ImageVector.vectorResource(id = R.drawable.baseline_arrow_back_24),
+                        contentDescription = "뒤로가기",
                         tint = MaterialTheme.colors.primary
                     )
                 }
             }
-
             if (!isLoading.value) {
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(2.dp),
                     contentPadding = PaddingValues(bottom = 13.dp)
                 ) {
-                    items(incompleteTodos.value, key = { it.id!! }) { todo ->
+                    items(completeTodos.value, key = { it.id!! }) { todo ->
                         TodoItem(
                             todo = todo,
                             onEvent = viewModel::onEvent,    // !!
@@ -134,13 +101,9 @@ fun TodoListScreen(
                                         easing = LinearOutSlowInEasing,
                                     )
                                 )
-                                .fillMaxWidth()
-                                .clickable {
-                                    viewModel.onEvent(TodoListEvent.OnTodoClick(todo))
-                                },
+                                .fillMaxWidth(),
                             onDelete = {
                                 viewModel.onEvent(TodoListEvent.OnDeleteTodoClick(todo))
-//                                    visibleAnimation = false
                             }
                         )
                     }
@@ -152,5 +115,4 @@ fun TodoListScreen(
             }
         }
     }
-
 }

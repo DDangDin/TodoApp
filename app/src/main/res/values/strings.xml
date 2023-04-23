@@ -4,6 +4,8 @@
 
     <string name="pageName_todoList">나의 TODO 리스트</string>
     <string name="pageName_addTodo">TODO 추가</string>
+    <string name="pageName_editTodo">TODO 수정</string>
+    <string name="pageName_completeTodo">완료된 TODO</string>
     <string name="addTodo_textField_title">TODO 제목</string>
     <string name="addTodo_textField_content">추가 내용</string>
 

@@ -61,7 +61,7 @@ fun AddEditTodoScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 5.dp, end = 25.dp, top = 25.dp, bottom = 25.dp),
-                text = R.string.pageName_addTodo
+                text = if(viewModel.title.isEmpty()) R.string.pageName_addTodo else R.string.pageName_editTodo
             )
             Spacer(modifier = Modifier.height(13.dp))
             TextField(

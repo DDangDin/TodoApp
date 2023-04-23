@@ -1,7 +1,7 @@
 package com.example.todoapp.domain.use_case
 
 //data class TodoUseCases(
-//    val getTodos: GetTodos,
+//    val getTodosTemp: GetTodos,
 //    val deleteTodo: DeleteTodo
 //)
 

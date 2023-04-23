@@ -14,18 +14,18 @@
 //    operator fun invoke(
 //        todoOrder: TodoOrder = TodoOrder.Date(OrderType.Descending)
 //    ): Flow<List<TodoEntity>> {
-//        return repository.getTodos().map { todos ->
+//        return repository.getTodosTemp().map { todosTemp ->
 //            when(todoOrder.orderType) {
 //                is OrderType.Ascending -> {
 //                    when(todoOrder) {
-//                        is TodoOrder.Title -> todos.sortedBy { it.title.lowercase() }
-//                        is TodoOrder.Date -> todos.sortedBy { it.timestamp }
+//                        is TodoOrder.Title -> todosTemp.sortedBy { it.title.lowercase() }
+//                        is TodoOrder.Date -> todosTemp.sortedBy { it.timestamp }
 //                    }
 //                }
 //                is OrderType.Descending -> {
 //                    when(todoOrder) {
-//                        is TodoOrder.Title -> todos.sortedByDescending { it.title.lowercase() }
-//                        is TodoOrder.Date -> todos.sortedByDescending { it.timestamp }
+//                        is TodoOrder.Title -> todosTemp.sortedByDescending { it.title.lowercase() }
+//                        is TodoOrder.Date -> todosTemp.sortedByDescending { it.timestamp }
 //                    }
 //                }
 //            }
